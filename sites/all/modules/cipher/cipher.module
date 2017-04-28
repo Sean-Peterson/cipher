@@ -62,21 +62,22 @@ function element_validate_interger_positive($element) {
     }
 }
 
-function encryption_form_submit($form, &$form_state) {
-    $form_state['redirect'] = 'cipher/result';
+function encryption_form_submit($form, &$form_state){
     $shift = $form_state['values']['shift'];
     $direction = $form_state['values']['direction'];
     $word = $form_state['values']['word'];
-    var_dump($shift, $direction, $word);
-    $_SESSION['values']=[$shift, $direction, $word];
+    $letters = range('a', 'z');
+    $_SESSION['values']=[$letters];
     $form_state['redirect'] = 'cipher/result';
 }
 
 function cipher_result() {
-    $show = '<h1>';
-    foreach($_SESSION['values'] as $value){
-        $show .= $value;
-    }
+    $show = '<h1>'.$_SESSION['values'][0][1];
+    // foreach($_SESSION['values'] as $value){
+    //     foreach ($value as $letter) {
+    //         $show .= $letter;
+    //     }
+    // }
     $show .= '</h1>';
     return $show;
 }
