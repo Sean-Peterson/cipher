@@ -31,17 +31,29 @@ Cipher is a Drupal website that uses a custom module to encrypt user messages.
 
 ## BDD
 
-1. Input:
-Shift value = 3
-Shift direction = right
-Phrase = "hello"
-Output: "khoor"
+#### 1.
+Input:
 
-2. Input:
+Shift value = 3
+
+Shift direction = right
+
+Phrase = "hello"
+
+Output:
+"khoor"
+
+####2.
+Input:
+
 Shift value = 1
+
 Shift direction = left
+
 Phrase = "hi there!"
-Output: "gh sgdqd!"
+
+Output:
+"gh sgdqd!"
 
 ## To run Bookstore from a personal computer:
 
