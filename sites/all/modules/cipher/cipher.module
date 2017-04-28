@@ -74,7 +74,12 @@ function encryption_form_submit($form, &$form_state){
         for($i=0;$i<count($split);$i++){
             for($j=0;$j<count($letters_left);$j++){
                 if($split[$i] == $letters_left[$j]){
+                    if($j<abs($shift_number)){
+                        $new_number = $j + $shift_number;
+                        $split[$i] = $letters_left[26+$new_number];
+                    }else{
                     $split[$i] = $letters_left[$j+$shift_number];
+                    }
                 }
             }
         }
@@ -84,8 +89,13 @@ function encryption_form_submit($form, &$form_state){
         for($i=0;$i<count($split);$i++){
             for($j=0;$j<count($letters_right);$j++){
                 if($split[$i] == $letters_right[$j]){
+                    if($j<abs($shift_number)){
+                        $new_number = $j + $shift_number;
+                        $split[$i] = $letters_right[26+$new_number];
+                    }else{
                     $split[$i] = $letters_right[$j+$shift_number];
-                }
+                    }
+               }
             }
         }
     }
