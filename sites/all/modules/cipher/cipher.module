@@ -16,6 +16,9 @@ function encryption_form(){
         '#type'=>'textfield',
         '#description'=>t('This number will be used to encrypt your word'),
         '#required'=>TRUE,
+        '#element_validate'=>array(
+            'element_validate_interger_positive',
+         ),
     );
     $form['direction']=array(
         '#title'=>'Specify LEFT or RIGHT, please',
@@ -24,7 +27,6 @@ function encryption_form(){
         '#required'=>TRUE,
         '#element_validate'=>array(
             'element_validate_direction',
-
          ),
     );
     $form['user_input']=array(
@@ -41,10 +43,15 @@ function encryption_form(){
 }
 
 function element_validate_direction($element) {
-  var_dump(strtolower($element['#value']));
     if(strtolower($element['#value']) == 'left' || strtolower($element['#value']) == 'right'){
       return;
     }else{
         form_error($element, t('Please specify either left or right'));
+    }
+}
+
+function element_validate_interger_positive($element) {
+    if($element['#value']<1){
+        form_error($element, t('Please enter a positive interger'));
     }
 }
