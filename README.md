@@ -20,22 +20,6 @@ Cipher is a Drupal website that uses a custom module to encrypt user messages.
 
 * Your final result should be in all lowercase.
 
-## BDD
-1. Input:
-  Shift value = 3
-  Shift direction = right
-  Phrase = "hello"
-
-  Output:
-  "khoor"
-
-2. Input:
-  Shift value = 1
-  Shift direction = left
-  Phrase = "hi there!"
-
-  Output:
-  "gh sgdqd!"
 
 ### Form validation:
 
@@ -44,6 +28,20 @@ Cipher is a Drupal website that uses a custom module to encrypt user messages.
 * The shift direction must be either "left" or "right".
 
 * The only special characters that should be allowed in your input phrase are spaces and punctuation.
+
+## BDD
+
+1. Input:
+Shift value = 3
+Shift direction = right
+Phrase = "hello"
+Output: "khoor"
+
+2. Input:
+Shift value = 1
+Shift direction = left
+Phrase = "hi there!"
+Output: "gh sgdqd!"
 
 ## To run Bookstore from a personal computer:
 
