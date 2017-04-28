@@ -1,4 +1,37 @@
 <?php
 function cipher_menu() {
-  
+  $items['cipher'] = array(
+     'title' => 'Cipher',
+     'page callback' => 'drupal_get_form',
+     'page arguments' => array('encryption_form'),
+     'access callback' => TRUE,
+     'type' => MENU_NORMAL_ITEM,
+ );
+ return $items;
+}
+
+function encryption_form(){
+    $form['shift']=array(
+        '#title'=>'A number, please',
+        '#type'=>'textfield',
+        '#description'=>t('This number will be used to encrypt your word'),
+        '#required'=>TRUE,
+    );
+    $form['direction']=array(
+        '#title'=>'Specify LEFT or RIGHT, please',
+        '#type'=>'textfield',
+        '#description'=>t('The direction will be used to encrypt your word'),
+        '#required'=>TRUE,
+    );
+    $form['user_input']=array(
+        '#title'=>'Input a word for encryption',
+        '#type'=>'textfield',
+        '#description'=>t('This word will be encrypted with the information you provided'),
+        '#required'=>TRUE,
+    );
+    $form['submit']=array(
+        '#type'=>'submit',
+        '#value'=>'Submit',
+    );
+    return $form;
 }
