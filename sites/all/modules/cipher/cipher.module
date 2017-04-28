@@ -22,6 +22,10 @@ function encryption_form(){
         '#type'=>'textfield',
         '#description'=>t('The direction will be used to encrypt your word'),
         '#required'=>TRUE,
+        '#element_validate'=>array(
+            'element_validate_direction',
+
+         ),
     );
     $form['user_input']=array(
         '#title'=>'Input a word for encryption',
@@ -34,4 +38,13 @@ function encryption_form(){
         '#value'=>'Submit',
     );
     return $form;
+}
+
+function element_validate_direction($element) {
+  var_dump(strtolower($element['#value']));
+    if(strtolower($element['#value']) == 'left' || strtolower($element['#value']) == 'right'){
+      return;
+    }else{
+        form_error($element, t('Please specify either left or right'));
+    }
 }
