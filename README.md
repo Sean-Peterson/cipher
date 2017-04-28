@@ -20,6 +20,23 @@ Cipher is a Drupal website that uses a custom module to encrypt user messages.
 
 * Your final result should be in all lowercase.
 
+## BDD
+1. Input:
+  Shift value = 3
+  Shift direction = right
+  Phrase = "hello"
+
+  Output:
+  "khoor"
+
+2. Input:
+  Shift value = 1
+  Shift direction = left
+  Phrase = "hi there!"
+
+  Output:
+  "gh sgdqd!"
+
 ### Form validation:
 
 * The shift value must be a positive integer
