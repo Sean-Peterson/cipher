@@ -63,21 +63,46 @@ function element_validate_interger_positive($element) {
 }
 
 function encryption_form_submit($form, &$form_state){
-    $shift = $form_state['values']['shift'];
-    $direction = $form_state['values']['direction'];
-    $word = $form_state['values']['word'];
-    $letters = range('a', 'z');
-    $_SESSION['values']=[$letters];
+    $shift_number = $form_state['values']['shift'];
+    $direction = strtolower($form_state['values']['direction']);
+    $word = strtolower($form_state['values']['word']);
+    $split = str_split($word);
+    $letters_left = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y', 'z');
+    $letters_right = array('z','y','x','w','v','u','t','s','r','q','p','o','n','m','l','k','j','i','h','g','f','e','d','c','b','a');
+    if ($direction == 'left') {
+        $shift_number = -1 * $shift_number;
+        for($i=0;$i<count($split);$i++){
+            for($j=0;$j<count($letters_left);$j++){
+                if($split[$i] == $letters_left[$j]){
+                    $split[$i] = $letters_left[$j+$shift_number];
+                }
+            }
+        }
+    }
+    if ($direction == 'right') {
+        $shift_number = -1 * $shift_number;
+        for($i=0;$i<count($split);$i++){
+            for($j=0;$j<count($letters_right);$j++){
+                if($split[$i] == $letters_right[$j]){
+                    $split[$i] = $letters_right[$j+$shift_number];
+                }
+            }
+        }
+    }
+
+
+    $_SESSION['values']=[$split];
     $form_state['redirect'] = 'cipher/result';
 }
 
 function cipher_result() {
-    $show = '<h1>'.$_SESSION['values'][0][1];
-    // foreach($_SESSION['values'] as $value){
-    //     foreach ($value as $letter) {
-    //         $show .= $letter;
-    //     }
-    // }
+    $show = '<h1>';
+    foreach($_SESSION['values'] as $value){
+        foreach ($value as $letter) {
+            $show .= $letter;
+        }
+    }
     $show .= '</h1>';
     return $show;
 }
+// .$_SESSION['values'][0][0]
