@@ -63,49 +63,88 @@ function element_validate_interger_positive($element) {
 }
 
 function encryption_form_submit($form, &$form_state){
-    $shift_number = intval($form_state['values']['shift']);
+    $shift = $form_state['values']['shift'];
     $direction = strtolower($form_state['values']['direction']);
     $word = strtolower($form_state['values']['word']);
-    $split = str_split($word);
+    $split = str_split($word,1);
     $letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w', 'x','y','z');
-
-    while($shift_number>26){
-        $shift_number = $shift_number - 26;
+    $symbols = array('.',',',' ','!',';',':');
+    $shift_number = intval($shift);
+    while($shift_number>26) {
+            $shift_number = $shift_number - 26;
     }
-
-    $output=array();
-    if ($direction == 'left') {
-        foreach ($split as $letter) {
-            for($i=0;$i<count($letters)-1;$i++){
-                if($letter==$letters[$i]){
-                    if ($i<$shift_number) {
-                        $new_number=$i-$shift_number+26;
-                        array_push($output,$letters[$new_number]);
-                    }else{
-                        array_push($output,$letters[$i-$shift_number]);
+    // if ($direction =='right') {
+    //     for($t=0;$t<count($split)-1;$t++){
+    //         for($k=0;$k<count($letters)-1;$k++){
+    //             if($split[$t]==$letters[$k]){
+    //                 if ($k+$shift_number>25) {
+    //                     $new_number=$k+$shift_number-26;
+    //                     $split[$t] = $letters[$new_number];
+    //                 }else{
+    //                     $split[$t] = $letters[$k+$shift_number];
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+        for($i=0;$i<count($split);$i++){
+            for($j=0;$j<count($letters)-1;$j++){
+                if($split[$i]==$letters[$j]){
+                    if($direction=='left'){
+                        if ($j<$shift_number) {
+                            $new_number=$j-$shift_number+26;
+                            $split[$i] = $letters[$new_number];
+                        }else{
+                            $split[$i] = $letters[$j-$shift_number];
+                        }
+                    }elseif($direction=='right'){
+                        if ($j>$shift_number) {
+                            $new_number=$j-$shift_number+26;
+                            $split[$i] = $letters[$new_number];
+                        }else{
+                            $split[$i] = $letters[$i+$shift_number];
+                        }
                     }
                 }
             }
         }
-    }else{
-        foreach ($split as $letter) {
-            for($i=0;$i<count($letters)-1;$i++){
-                if($letter==$letters[$i]){
-                    if ($i+$shift_number>25) {
-                        $new_number=$i+$shift_number-26;
-                        array_push($output,$letters[$new_number]);
-                    }else{
-                        array_push($output,$letters[$i-$shift_number]);
-                    }
-                }
-            }
-        }
-    }
 
-    $_SESSION['values']=[$output];
+    // $output=array();
+    // if ($direction == 'left') {
+    //     foreach ($split as $letter) {
+    //         for($i=0;$i<count($letters)-1;$i++){
+    //             if($letter==$letters[$i]){
+    //                 if ($i<$shift_number) {
+    //                     $new_number=$i-$shift_number+26;
+    //                     array_push($output,$letters[$new_number]);
+    //                 }else{
+    //                     array_push($output,$letters[$i-$shift_number]);
+    //                 }
+    //             }else{
+    //                 array_push($output, $letter);
+    //             }
+    //         }
+    //         // array_push($output, $letter)
+    //     }
+    // }else{
+    //     foreach ($split as $letter) {
+    //         for($i=0;$i<count($letters)-1;$i++){
+    //             if($letter==$letters[$i]){
+    //                 if ($i+$shift_number>25) {
+    //                     $new_number=$i+$shift_number-26;
+    //                     array_push($output,$letters[$new_number]);
+    //                 }else{
+    //                     array_push($output,$letters[$i-$shift_number]);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    $_SESSION['values']=[$split];
     $form_state['redirect'] = 'cipher/result';
     }
-
+// . $noomber.$_SESSION['j'].$_SESSION['j']
     function cipher_result() {
     $show = '<h1>';
     foreach($_SESSION['values'] as $value){
