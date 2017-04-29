@@ -97,12 +97,12 @@ function encryption_form_submit($form, &$form_state){
                         }else{
                             $split[$i] = $letters[$j-$shift_number];
                         }
-                    }elseif($direction=='right'){
-                        if ($j>$shift_number) {
-                            $new_number=$j-$shift_number+26;
-                            $split[$i] = $letters[$new_number];
+                    }else if($direction=='right'){
+                        if ($j+$shift_number>25) {
+                            $newer_number=$j+$shift_number-26;
+                            $split[$i] = $letters[$newer_number];
                         }else{
-                            $split[$i] = $letters[$i+$shift_number];
+                            $split[$i] = $letters[$j+$shift_number];
                         }
                     }
                 }
