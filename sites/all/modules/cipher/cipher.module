@@ -7,9 +7,9 @@ function cipher_menu() {
         'access callback' => TRUE,
         'type' => MENU_NORMAL_ITEM,
     );
-    $items['cipher/result'] = array(
+    $items['encryption_results'] = array(
         'title' => "Can you decipher the code?",
-        'page callback' => 'cipher_result',
+        'page callback' => 'encryption_result',
         'access callback' => TRUE,
         'type' => MENU_CALLBACK,
     );
@@ -23,7 +23,7 @@ function encryption_form(){
         '#description'=>t('This number will be used to encrypt your word'),
         '#required'=>TRUE,
         '#element_validate'=>array(
-            'element_validate_interger_positive',
+            'element_validate_integer_positive',
         ),
     );
     $form['direction']=array(
@@ -54,218 +54,46 @@ function element_validate_direction($element) {
     }
 }
 
-function element_validate_interger_positive($element) {
-    if($element['#value']<1){
-        form_error($element, t('Please enter a positive interger'));
-    }
+function encryption_form_submit($form, &$form_state) {
+    $shift=$form_state['values']['shift'];
+    $direction=$form_state['values']['direction'];
+    $word=$form_state['values']['word'];
+    $_SESSION['shift']=$shift;
+    $_SESSION['direction']=$direction;
+    $_SESSION['word']=$word;
+
+    $form_state['redirect'] = 'encryption_results';
 }
 
-function encryption_form_submit($form, &$form_state){
-    $shift = $form_state['values']['shift'];
-    $direction = strtolower($form_state['values']['direction']);
-    $word = strtolower($form_state['values']['word']);
-    $split = str_split($word,1);
-    $letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w', 'x','y','z');
-    $symbols = array('.',',',' ','!',';',':');
-    $shift_number = intval($shift);
-    while($shift_number>26) {
-            $shift_number = $shift_number - 26;
+function encryption_result() {
+    $shift=($_SESSION['shift']);
+    $direction=strtolower($_SESSION['direction']);
+    $word=($_SESSION['word']);
+    $split_word=str_split($word);
+    $alphabet=range('a','z');
+    while($shift>25){
+        $shift = $shift-26;
     }
-    // if ($direction =='right') {
-    //     for($t=0;$t<count($split)-1;$t++){
-    //         for($k=0;$k<count($letters)-1;$k++){
-    //             if($split[$t]==$letters[$k]){
-    //                 if ($k+$shift_number>25) {
-    //                     $new_number=$k+$shift_number-26;
-    //                     $split[$t] = $letters[$new_number];
-    //                 }else{
-    //                     $split[$t] = $letters[$k+$shift_number];
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-        for($i=0;$i<count($split);$i++){
-            for($j=0;$j<count($letters)-1;$j++){
-                if($split[$i]==$letters[$j]){
-                    $spot=$j;
-                    if($direction=='left'){
-                        if ($j<$shift_number) {
-
-                            $_SESSION['count']=count($letters);
-                            $_SESSION['split_count']=count($split);
-                            $_SESSION['j']=$j;
-                            $_SESSION['shift']=$shift;
-                            $_SESSION['direction']=$direction;
-                            $_SESSION['word']=$word;
-                            $_SESSION['split']=$split;
-
-                            $new_number=$j-$shift_number+26;
-                            $split[$i] = $letters[$new_number];
-                        }else{
-
-                            $_SESSION['count']=count($letters);
-                            $_SESSION['split_count']=count($split);
-                            $_SESSION['j']=$j;
-                            $_SESSION['shift']=$shift;
-                            $_SESSION['direction']=$direction;
-                            $_SESSION['word']=$word;
-                            $_SESSION['split']=$split;
-
-                            $split[$i] = $letters[$j-$shift_number];
-                        }
-                    }else if($direction=='right'){
-                        if (($j+$shift_number)>25) {
-
-                            $_SESSION['split_count']=count($split);
-                            $_SESSION['count']=count($letters);
-                            $_SESSION['j']=$spot;
-                            $_SESSION['shift']=$shift;
-                            $_SESSION['direction']=$direction;
-                            $_SESSION['word']=$word;
-                            $_SESSION['split']=str_split($word);
-
-                            $newer_number=$j+$shift_number-26;
-                            $split[$i] = $letters[$newer_number];
-                        }else{
-
-                            $_SESSION['count']=count($letters);
-                            $_SESSION['split_count']=count($split);
-                            $_SESSION['j']=$spot;
-                            $_SESSION['shift']=$shift;
-                            $_SESSION['direction']=$direction;
-                            $_SESSION['word']=$word;
-                            $_SESSION['split']=$split;
-
-                            $split[$i] = $letters[$j+$shift_number];
-                        }
-                    }
+    foreach ($split_word as &$value) {
+        $alph_spot = array_search($value,$alphabet);
+        if(isset($alph_spot) && $alph_spot !== false){
+            if ($direction == 'right') {
+                if (($alph_spot+$shift)>25) {
+                    $right_shift = ($alph_spot+$shift)-26;
+                    $value=$alphabet[$right_shift];
+                }else{
+                    $value=$alphabet[$alph_spot+$shift];
+                }
+            }elseif ($direction == 'left'){
+                if ($alph_spot-$shift<0) {
+                    $left_shift = ($alph_spot-$shift)+26;
+                    $value=$alphabet[$left_shift];
+                }else{
+                    $value=$alphabet[$alph_spot-$shift];
                 }
             }
         }
-
-    // $output=array();
-    // if ($direction == 'left') {
-    //     foreach ($split as $letter) {
-    //         for($i=0;$i<count($letters)-1;$i++){
-    //             if($letter==$letters[$i]){
-    //                 if ($i<$shift_number) {
-    //                     $new_number=$i-$shift_number+26;
-    //                     array_push($output,$letters[$new_number]);
-    //                 }else{
-    //                     array_push($output,$letters[$i-$shift_number]);
-    //                 }
-    //             }else{
-    //                 array_push($output, $letter);
-    //             }
-    //         }
-    //         // array_push($output, $letter)
-    //     }
-    // }else{
-    //     foreach ($split as $letter) {
-    //         for($i=0;$i<count($letters)-1;$i++){
-    //             if($letter==$letters[$i]){
-    //                 if ($i+$shift_number>25) {
-    //                     $new_number=$i+$shift_number-26;
-    //                     array_push($output,$letters[$new_number]);
-    //                 }else{
-    //                     array_push($output,$letters[$i-$shift_number]);
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
-    $_SESSION['values']=[$split];
-    $form_state['redirect'] = 'cipher/result';
     }
-// . $noomber.$_SESSION['j'].$_SESSION['j']
-    function cipher_result() {
-    $show = '<h1>'. 'next j ' . $_SESSION['j']. ' next word ' . $_SESSION['word']. ' next split ' . $_SESSION['split'][0]. ' next direction ' . $_SESSION['direction']. ' next shift ' . $_SESSION['shift'].' next count of alphabet '. $_SESSION['count'].' '.' next count of split '. $_SESSION['split_count'].' ' ;
-foreach($_SESSION['values'] as $value){
-        foreach ($value as $letter) {
-            $show .= $letter;
-        }
-    }
-    $show .= '</h1>';
-    return $show;
-    }
-
-    // $letters_left = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w', 'x','y','z');
-    // $letters_right = array('z','y','x','w','v','u','t','s','r','q','p','o','n','m','l','k','j','i','h','g','f','e','d','c','b','a');
-    // if($shift_number>26){
-    //     while($shift_number>25){
-    //         $shift_number = $shift_number - 26;
-    //     }
-    // }
-    // if ($direction == 'left') {
-    //     $shift_number = -1 * $shift_number;
-    //     for($i=0;$i<count($split);$i++){
-    //         for($j=0;$j<count($letters_left)-1;$j++){
-    //             if($split[$i] == $letters_left[$j]){
-    //                 if($j <= abs($shift_number)){
-    //                     $new_number = count($letters_left)+$shift_number;
-    //                     $split[$i] = $letters_left[$new_number];
-    //                 }else{
-    //                     $split[$i] = $letters_left[$j+$shift_number];
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }else if ($direction == 'right') {
-    //     $shift_number = -1 * $shift_number;
-    //     for($i=0;$i<count($split);$i++){
-    //         for($j=0;$j<count($letters_right)-1;$j++){
-    //             if($split[$i] == $letters_right[$j]){
-    //                 if($j<abs($shift_number)){
-    //                     $new_number = $j + $shift_number;
-    //                     $split[$i] = '$letters_right[26+$new_number]';
-    //                 }else{
-    //                     $split[$i] = '$letters_right[$j+$shift_number]';
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
-
-//     $_SESSION['values']=[$split];
-//     $form_state['redirect'] = 'cipher/result';
-// }
-//
-// function cipher_result() {
-//     $show = '<h1>';
-//     foreach($_SESSION['values'] as $value){
-//         foreach ($value as $letter) {
-//             $show .= $letter;
-//         }
-//     }
-//     $show .= '</h1>';
-//     return $show;
-// }
-    // if ($direction == 'right') {
-    //     for($i=0;$i<count($split);$i++){
-    //         for($j=0;$j<count($letters_left)-1;$j++){
-    //             if ($split[$i]===$letters_left[$j]) {
-    //                 $split[$i] = $letters_left[$j+$shift_number];
-    //             }
-    //         }
-    //     }
-    // }
-// .$_SESSION['values'][0][25]
-
-// if ($direction == 'left') {
-//     $shift_number = -1 * $shift_number;
-//     for($i=0;$i<count($split);$i++){
-//         for($j=0;$j<count($letters_left);$j++){
-//             if($split[$i] == $letters_left[$j]){
-//                 if($j<abs($shift_number)){
-//                     $new_number = $j + $shift_number;
-//                     $split[$i] = $letters_left[26+$new_number];
-//                 }else{
-//                 $split[$i] = $letters_left[$j+$shift_number];
-//                 }
-//             }
-//         }
-//     }
-// }
+    $output = implode('', $split_word);
+    return '<h1>' . $output . '</h1>';
+}
