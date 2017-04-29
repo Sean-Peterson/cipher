@@ -49,9 +49,7 @@ function encryption_form(){
 }
 
 function element_validate_direction($element) {
-    if(strtolower($element['#value']) == 'left' || strtolower($element['#value']) == 'right'){
-        return;
-    }else{
+    if(strtolower($element['#value']) !== 'left' && strtolower($element['#value']) !== 'right'){
         form_error($element, t('Please specify either left or right'));
     }
 }
@@ -93,36 +91,52 @@ function encryption_form_submit($form, &$form_state){
                     $spot=$j;
                     if($direction=='left'){
                         if ($j<$shift_number) {
+
+                            $_SESSION['count']=count($letters);
+                            $_SESSION['split_count']=count($split);
                             $_SESSION['j']=$j;
                             $_SESSION['shift']=$shift;
                             $_SESSION['direction']=$direction;
                             $_SESSION['word']=$word;
                             $_SESSION['split']=$split;
+
                             $new_number=$j-$shift_number+26;
                             $split[$i] = $letters[$new_number];
                         }else{
+
+                            $_SESSION['count']=count($letters);
+                            $_SESSION['split_count']=count($split);
                             $_SESSION['j']=$j;
                             $_SESSION['shift']=$shift;
                             $_SESSION['direction']=$direction;
                             $_SESSION['word']=$word;
                             $_SESSION['split']=$split;
+
                             $split[$i] = $letters[$j-$shift_number];
                         }
                     }else if($direction=='right'){
                         if (($j+$shift_number)>25) {
+
+                            $_SESSION['split_count']=count($split);
+                            $_SESSION['count']=count($letters);
                             $_SESSION['j']=$spot;
                             $_SESSION['shift']=$shift;
                             $_SESSION['direction']=$direction;
                             $_SESSION['word']=$word;
                             $_SESSION['split']=str_split($word);
+
                             $newer_number=$j+$shift_number-26;
                             $split[$i] = $letters[$newer_number];
                         }else{
+
+                            $_SESSION['count']=count($letters);
+                            $_SESSION['split_count']=count($split);
                             $_SESSION['j']=$spot;
                             $_SESSION['shift']=$shift;
                             $_SESSION['direction']=$direction;
                             $_SESSION['word']=$word;
                             $_SESSION['split']=$split;
+
                             $split[$i] = $letters[$j+$shift_number];
                         }
                     }
@@ -167,7 +181,7 @@ function encryption_form_submit($form, &$form_state){
     }
 // . $noomber.$_SESSION['j'].$_SESSION['j']
     function cipher_result() {
-    $show = '<h1>'. 'next j ' . $_SESSION['j']. ' next word ' . $_SESSION['word']. ' next split ' . $_SESSION['split'][0]. ' next direction ' . $_SESSION['direction']. ' next shift ' . $_SESSION['shift'];
+    $show = '<h1>'. 'next j ' . $_SESSION['j']. ' next word ' . $_SESSION['word']. ' next split ' . $_SESSION['split'][0]. ' next direction ' . $_SESSION['direction']. ' next shift ' . $_SESSION['shift'].' next count of alphabet '. $_SESSION['count'].' '.' next count of split '. $_SESSION['split_count'].' ' ;
 foreach($_SESSION['values'] as $value){
         foreach ($value as $letter) {
             $show .= $letter;
